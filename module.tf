@@ -1,3 +1,3 @@
-module "textract_tutorials_go" {
-    source = "./textract-tutorials-go"    
+module "textract_tutorial" {
+    source = "./textract_tutorial"    
 }
