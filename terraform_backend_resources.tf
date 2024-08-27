@@ -1,28 +1,41 @@
 # S3 bucket that store Terraform State file
-resource "aws_s3_bucket" "kkp_persoal_terraform" {
-  bucket = "kkp-persoal-terraform"
+resource "aws_s3_bucket" "kkp_personal_terraform" {
+  bucket = "kkp-personal-terraform"
 }
 
-resource "aws_s3_bucket_acl" "kkp_persoal_terraform_acl" {
-  bucket = aws_s3_bucket.kkp_persoal_terraform.id
-  acl    = "private"
-}
-
-resource "aws_s3_bucket_versioning" "kkp_persoal_terraform_versioning" {
-  bucket = aws_s3_bucket.kkp_persoal_terraform.id
+resource "aws_s3_bucket_versioning" "kkp_personal_terraform_versioning" {
+  bucket = aws_s3_bucket.kkp_personal_terraform.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "kkp_persoal_terraform_encryption" {
-  bucket = aws_s3_bucket.kkp_persoal_terraform.bucket
+resource "aws_s3_bucket_server_side_encryption_configuration" "kkp_personal_terraform_encryption" {
+  bucket = aws_s3_bucket.kkp_personal_terraform.bucket
 
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
     }
   }
+}
+
+resource "aws_s3_bucket_policy" "kkp_personal_terraform_policy" {
+  bucket = aws_s3_bucket.kkp_personal_terraform.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Allow",
+        Principal = "*",
+        Action    = "s3:*",
+        Resource = [
+          "${aws_s3_bucket.kkp_personal_terraform.arn}/*",
+          aws_s3_bucket.kkp_personal_terraform.arn,
+        ],
+      },
+    ],
+  })
 }
 
 
